@@ -10,10 +10,10 @@ GEN_OPTS__FLAG := --cmd_file="syscfg/board.opt" --cmd_file="syscfg/c2000ware_lib
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
-"./lab_cla_tasks.obj" \
 "./syscfg/board.obj" \
 "./syscfg/c2000ware_libraries.obj" \
-"./lab_main.obj" \
+"./main.obj" \
+"./tasks.obj" \
 "./device/F2837xD_CodeStartBranch.obj" \
 "./device/device.obj" \
 "../2837xD_RAM_CLA_lnk_cpu1.cmd" \
@@ -128,30 +128,30 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-lab_cla_lp_f2837xd.out 
+cla_example.out 
 
 EXE_OUTPUTS__QUOTED += \
-"lab_cla_lp_f2837xd.out" 
+"cla_example.out" 
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "lab_cla_lp_f2837xd.out"
+	@$(MAKE) --no-print-directory -Onone "cla_example.out"
 
 # Tool invocations
-lab_cla_lp_f2837xd.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
+cla_example.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff --define=CPU1 --define=DEBUG --define=_LAUNCHXL_F28379D --define=_DUAL_CORE_ --define=F2837XD_DEVICE --c99 --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --cla_background_task=off --cla_signed_compare_workaround=on -z -m"lab_cla_lp_f2837xd.map" --heap_size=0x200 --stack_size=0x3F8 --warn_sections -i"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib" -i"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include" --reread_libs --define=RAM --define=CLA_C --diag_wrap=off --display_error_number --xml_link_info="lab_cla_lp_f2837xd_linkInfo.xml" --entry_point=code_start --rom_model -o "lab_cla_lp_f2837xd.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff --define=CPU1 --define=DEBUG --define=_LAUNCHXL_F28379D --define=_DUAL_CORE_ --define=F2837XD_DEVICE --c99 --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --cla_background_task=off --cla_signed_compare_workaround=on -z -m"cla_example.map" --heap_size=0x200 --stack_size=0x3F8 --warn_sections -i"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib" -i"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include" --reread_libs --define=RAM --define=CLA_C --diag_wrap=off --display_error_number --xml_link_info="cla_example_linkInfo.xml" --entry_point=code_start --rom_model -o "cla_example.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "lab_cla_tasks.obj" "syscfg\board.obj" "syscfg\c2000ware_libraries.obj" "lab_main.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" 
-	-$(RM) "syscfg\board.d" "syscfg\c2000ware_libraries.d" "lab_main.d" "device\device.d" 
-	-$(RM) "lab_cla_tasks.d" 
+	-$(RM) "syscfg\board.obj" "syscfg\c2000ware_libraries.obj" "main.obj" "tasks.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" 
+	-$(RM) "syscfg\board.d" "syscfg\c2000ware_libraries.d" "main.d" "device\device.d" 
+	-$(RM) "tasks.d" 
 	-$(RM) "device\F2837xD_CodeStartBranch.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
 	-@echo 'Finished clean'
