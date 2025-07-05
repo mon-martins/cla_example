@@ -1,4 +1,5 @@
 "./syscfg/board.obj"
+"./syscfg/device_cmd.obj"
 "./syscfg/c2000ware_libraries.obj"
 "./main.obj"
 "./tasks.obj"
@@ -6,4 +7,5 @@
 "./device/device.obj"
 "../2837xD_RAM_CLA_lnk_cpu1.cmd"
 "C:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib"
+-l"syscfg/device_cmd.cmd"
 -llibc.a

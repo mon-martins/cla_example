@@ -18,6 +18,11 @@ syscfg/board.cmd.genlibs: build-1890061919
 syscfg/board.opt: build-1890061919
 syscfg/board.json: build-1890061919
 syscfg/pinmux.csv: build-1890061919
+syscfg/device_cmd.cmd: build-1890061919
+syscfg/device_cmd.c: build-1890061919
+syscfg/device_cmd.h: build-1890061919
+syscfg/device_cmd.opt: build-1890061919
+syscfg/device_cmd.cmd.genlibs: build-1890061919
 syscfg/c2000ware_libraries.cmd.genlibs: build-1890061919
 syscfg/c2000ware_libraries.opt: build-1890061919
 syscfg/c2000ware_libraries.c: build-1890061919

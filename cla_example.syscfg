@@ -12,6 +12,8 @@
 const cla    = scripting.addModule("/driverlib/cla.js", {}, false);
 const cla1   = cla.addInstance();
 const memcfg = scripting.addModule("/driverlib/memcfg.js");
+const CMD    = scripting.addModule("/utilities/cmd_tool/cmd_syscfg/source/CMD", {}, false);
+const CMD1   = CMD.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -34,7 +36,14 @@ cla1.cpuint_CLA_TASK_4 = false;
 
 memcfg.init_MEMCFG_SECT_MSGCPUTOCLA1 = true;
 memcfg.init_MEMCFG_SECT_MSGCLA1TOCPU = true;
-memcfg.config_MEMCFG_SECT_LS0        = "CLA_data";
 memcfg.config_MEMCFG_SECT_LS1        = "CLA_data";
 memcfg.config_MEMCFG_SECT_LS4        = "CLA_prog";
 memcfg.config_MEMCFG_SECT_LS5        = "CLA_prog";
+
+CMD1.$name                         = "CMD0";
+CMD1.sectionMemory_cla1ToCpuMsgRAM = ["CLATOCPU_MSGRAM"];
+CMD1.sectionMemory_cpuToCla1MsgRAM = ["CPUTOCLA_MSGRAM"];
+CMD1.sectionMemory_cla1Prog        = ["RAMLS5"];
+CMD1.sectionMemory_claConst        = ["RAMLS1"];
+CMD1.sectionMemory_claScratchpad   = ["RAMLS1"];
+scripting.suppress("Memcfg module must be enabled for complete error checking\\.", CMD1, "sectionMemory_cpuToCla1MsgRAM");

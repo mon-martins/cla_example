@@ -6,11 +6,12 @@ SHELL = cmd.exe
 
 CG_TOOL_ROOT := C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS
 
-GEN_OPTS__FLAG := --cmd_file="syscfg/board.opt" --cmd_file="syscfg/c2000ware_libraries.opt" 
-GEN_CMDS__FLAG := 
+GEN_OPTS__FLAG := --cmd_file="syscfg/board.opt" --cmd_file="syscfg/device_cmd.opt" --cmd_file="syscfg/c2000ware_libraries.opt" 
+GEN_CMDS__FLAG := -l"syscfg/device_cmd.cmd" 
 
 ORDERED_OBJS += \
 "./syscfg/board.obj" \
+"./syscfg/device_cmd.obj" \
 "./syscfg/c2000ware_libraries.obj" \
 "./main.obj" \
 "./tasks.obj" \
@@ -149,8 +150,8 @@ cla_example.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "syscfg\board.obj" "syscfg\c2000ware_libraries.obj" "main.obj" "tasks.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" 
-	-$(RM) "syscfg\board.d" "syscfg\c2000ware_libraries.d" "main.d" "device\device.d" 
+	-$(RM) "syscfg\board.obj" "syscfg\device_cmd.obj" "syscfg\c2000ware_libraries.obj" "main.obj" "tasks.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" 
+	-$(RM) "syscfg\board.d" "syscfg\device_cmd.d" "syscfg\c2000ware_libraries.d" "main.d" "device\device.d" 
 	-$(RM) "tasks.d" 
 	-$(RM) "device\F2837xD_CodeStartBranch.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)

@@ -107,7 +107,7 @@ SECTIONS
    .em2_cs2         : > EMIF2_CS2n, PAGE = 1
 
     /* CLA specific sections */
-   Cla1Prog         : > RAMLS5, PAGE=0
+   Cla1Prog         : > RAMLS4, PAGE=0
 
    CLADataLS0		: > RAMLS0, PAGE=1
    CLADataLS1		: > RAMLS1, PAGE=1
