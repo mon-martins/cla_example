@@ -15,7 +15,7 @@ CLA_SRCS += \
 ../tasks.cla 
 
 LIB_SRCS += \
-C:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib 
+D:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib 
 
 C_SRCS += \
 ./syscfg/board.c \

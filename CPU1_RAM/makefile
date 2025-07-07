@@ -4,7 +4,7 @@
 
 SHELL = cmd.exe
 
-CG_TOOL_ROOT := C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS
+CG_TOOL_ROOT := C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS
 
 GEN_OPTS__FLAG := --cmd_file="syscfg/board.opt" --cmd_file="syscfg/device_cmd.opt" --cmd_file="syscfg/c2000ware_libraries.opt" 
 GEN_CMDS__FLAG := -l"syscfg/device_cmd.cmd" 
@@ -17,8 +17,9 @@ ORDERED_OBJS += \
 "./tasks.obj" \
 "./device/F2837xD_CodeStartBranch.obj" \
 "./device/device.obj" \
+"./src/scicomm.obj" \
 "../2837xD_RAM_CLA_lnk_cpu1.cmd" \
-"C:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib" \
+"D:/ti/c2000/C2000Ware_5_04_00_00/driverlib/f2837xd/driverlib/ccs/Debug/driverlib.lib" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
 
@@ -31,8 +32,10 @@ RMDIR := RMDIR /S/Q
 -include sources.mk
 -include subdir_vars.mk
 -include device/subdir_vars.mk
+-include src/subdir_vars.mk
 -include subdir_rules.mk
 -include device/subdir_rules.mk
+-include src/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -129,29 +132,29 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-cla_example.out 
+cla_example1.out 
 
 EXE_OUTPUTS__QUOTED += \
-"cla_example.out" 
+"cla_example1.out" 
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "cla_example.out"
+	@$(MAKE) --no-print-directory -Onone "cla_example1.out"
 
 # Tool invocations
-cla_example.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
+cla_example1.out: $(OBJS) $(CMD_SRCS) $(LIB_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff --define=CPU1 --define=DEBUG --define=_LAUNCHXL_F28379D --define=_DUAL_CORE_ --define=F2837XD_DEVICE --c99 --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --cla_background_task=off --cla_signed_compare_workaround=on -z -m"cla_example.map" --heap_size=0x200 --stack_size=0x3F8 --warn_sections -i"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib" -i"C:/ti/ccs1281/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include" --reread_libs --define=RAM --define=CLA_C --diag_wrap=off --display_error_number --xml_link_info="cla_example_linkInfo.xml" --entry_point=code_start --rom_model -o "cla_example.out" $(ORDERED_OBJS)
+	"C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/bin/cl2000" -v28 -ml -mt --cla_support=cla2 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu0 -Ooff --advice:performance=all --define=CPU1 --define=DEBUG --define=_LAUNCHXL_F28379D --define=_DUAL_CORE_ --define=F2837XD_DEVICE --c99 --diag_suppress=10063 --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --cla_background_task=off --cla_signed_compare_workaround=on -z -m"cla_example1.map" --heap_size=0x200 --stack_size=0x3F8 --warn_sections -i"C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/lib" -i"C:/ti/ccs1270/ccs/tools/compiler/ti-cgt-c2000_22.6.1.LTS/include" --reread_libs --define=RAM --define=CLA_C --diag_wrap=off --display_error_number --xml_link_info="cla_example1_linkInfo.xml" --entry_point=code_start --rom_model -o "cla_example1.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(GEN_MISC_FILES__QUOTED)$(GEN_FILES__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "syscfg\board.obj" "syscfg\device_cmd.obj" "syscfg\c2000ware_libraries.obj" "main.obj" "tasks.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" 
-	-$(RM) "syscfg\board.d" "syscfg\device_cmd.d" "syscfg\c2000ware_libraries.d" "main.d" "device\device.d" 
+	-$(RM) "syscfg\board.obj" "syscfg\device_cmd.obj" "syscfg\c2000ware_libraries.obj" "main.obj" "tasks.obj" "device\F2837xD_CodeStartBranch.obj" "device\device.obj" "src\scicomm.obj" 
+	-$(RM) "syscfg\board.d" "syscfg\device_cmd.d" "syscfg\c2000ware_libraries.d" "main.d" "device\device.d" "src\scicomm.d" 
 	-$(RM) "tasks.d" 
 	-$(RM) "device\F2837xD_CodeStartBranch.d" 
 	-$(RMDIR) $(GEN_MISC_DIRS__QUOTED)
