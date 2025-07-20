@@ -92,6 +92,14 @@ void myCLA0_init();
 
 //*****************************************************************************
 //
+// CPUTIMER Configurations
+//
+//*****************************************************************************
+#define myCPUTIMER0_BASE CPUTIMER0_BASE
+void myCPUTIMER0_init();
+
+//*****************************************************************************
+//
 // INTERRUPT Configurations
 //
 //*****************************************************************************
@@ -101,6 +109,12 @@ void myCLA0_init();
 #define INT_myCLA01 INT_CLA1_1
 #define INT_myCLA01_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP11
 extern __interrupt void cla1Isr1(void);
+
+// Interrupt Settings for INT_myCPUTIMER0
+// ISR need to be defined for the registered interrupts
+#define INT_myCPUTIMER0 INT_TIMER0
+#define INT_myCPUTIMER0_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
+extern __interrupt void INT_myCPUTIMER0_ISR(void);
 
 // Interrupt Settings for INT_SCI0_RX
 // ISR need to be defined for the registered interrupts
@@ -135,6 +149,7 @@ void SCI0_init();
 //*****************************************************************************
 void	Board_init();
 void	CLA_init();
+void	CPUTIMER_init();
 void	INTERRUPT_init();
 void	MEMCFG_init();
 void	SCI_init();

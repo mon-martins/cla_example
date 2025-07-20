@@ -9,13 +9,15 @@
 /**
  * Import the modules used in this configuration.
  */
-const cla    = scripting.addModule("/driverlib/cla.js", {}, false);
-const cla1   = cla.addInstance();
-const memcfg = scripting.addModule("/driverlib/memcfg.js");
-const sci    = scripting.addModule("/driverlib/sci.js", {}, false);
-const sci1   = sci.addInstance();
-const CMD    = scripting.addModule("/utilities/cmd_tool/cmd_syscfg/source/CMD", {}, false);
-const CMD1   = CMD.addInstance();
+const cla       = scripting.addModule("/driverlib/cla.js", {}, false);
+const cla1      = cla.addInstance();
+const cputimer  = scripting.addModule("/driverlib/cputimer.js", {}, false);
+const cputimer1 = cputimer.addInstance();
+const memcfg    = scripting.addModule("/driverlib/memcfg.js");
+const sci       = scripting.addModule("/driverlib/sci.js", {}, false);
+const sci1      = sci.addInstance();
+const CMD       = scripting.addModule("/utilities/cmd_tool/cmd_syscfg/source/CMD", {}, false);
+const CMD1      = CMD.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -35,6 +37,14 @@ cla1.cpuint_CLA_TASK_6 = false;
 cla1.cpuint_CLA_TASK_7 = false;
 cla1.cpuint_CLA_TASK_8 = false;
 cla1.cpuint_CLA_TASK_4 = false;
+
+cputimer1.$name                    = "myCPUTIMER0";
+cputimer1.timerPeriod              = 999;
+cputimer1.enableInterrupt          = true;
+cputimer1.registerInterrupts       = true;
+cputimer1.startTimer               = true;
+cputimer1.emulationMode            = "CPUTIMER_EMULATIONMODE_RUNFREE";
+cputimer1.timerInt.enableInterrupt = true;
 
 memcfg.init_MEMCFG_SECT_MSGCPUTOCLA1 = true;
 memcfg.init_MEMCFG_SECT_MSGCLA1TOCPU = true;

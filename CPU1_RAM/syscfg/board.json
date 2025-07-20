@@ -5,6 +5,10 @@
             "interruptHandler": "cla1Isr1"
         },
         {
+            "interruptName": "INT_myCPUTIMER0",
+            "interruptHandler": "INT_myCPUTIMER0_ISR"
+        },
+        {
             "interruptName": "INT_SCI0_RX",
             "interruptHandler": "INT_SCI0_RX_ISR"
         }

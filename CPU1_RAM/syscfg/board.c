@@ -50,6 +50,7 @@ void Board_init()
 	PinMux_init();
 	CLA_init();
 	MEMCFG_init();
+	CPUTIMER_init();
 	SCI_init();
 	INTERRUPT_init();
 
@@ -137,6 +138,26 @@ void CLA_init()
 
 //*****************************************************************************
 //
+// CPUTIMER Configurations
+//
+//*****************************************************************************
+void CPUTIMER_init(){
+	myCPUTIMER0_init();
+}
+
+void myCPUTIMER0_init(){
+	CPUTimer_setEmulationMode(myCPUTIMER0_BASE, CPUTIMER_EMULATIONMODE_RUNFREE);
+	CPUTimer_setPreScaler(myCPUTIMER0_BASE, 0U);
+	CPUTimer_setPeriod(myCPUTIMER0_BASE, 999U);
+	CPUTimer_enableInterrupt(myCPUTIMER0_BASE);
+	CPUTimer_stopTimer(myCPUTIMER0_BASE);
+
+	CPUTimer_reloadTimerCounter(myCPUTIMER0_BASE);
+	CPUTimer_startTimer(myCPUTIMER0_BASE);
+}
+
+//*****************************************************************************
+//
 // INTERRUPT Configurations
 //
 //*****************************************************************************
@@ -146,6 +167,11 @@ void INTERRUPT_init(){
 	// ISR need to be defined for the registered interrupts
 	Interrupt_register(INT_myCLA01, &cla1Isr1);
 	Interrupt_enable(INT_myCLA01);
+	
+	// Interrupt Settings for INT_myCPUTIMER0
+	// ISR need to be defined for the registered interrupts
+	Interrupt_register(INT_myCPUTIMER0, &INT_myCPUTIMER0_ISR);
+	Interrupt_enable(INT_myCPUTIMER0);
 	
 	// Interrupt Settings for INT_SCI0_RX
 	// ISR need to be defined for the registered interrupts
