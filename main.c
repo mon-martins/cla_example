@@ -34,6 +34,11 @@ void main(void)
 
 }
 
+
+
+
+// PIL
+
 __interrupt void cla1Isr1 ()
 {
 
@@ -47,6 +52,8 @@ __interrupt void INT_SCI0_RX_ISR(){
     protocolReceiveData( SCI0_BASE , &fVal , sizeof(float) );
 
     CLA_forceTasks(myCLA0_BASE,CLA_TASKFLAG_1);
+
+    SCI_clearInterruptStatus(SCI0_BASE, SCI_INT_RXFF);
 
     Interrupt_clearACKGroup(INT_SCI0_RX_INTERRUPT_ACK_GROUP);
 }

@@ -150,7 +150,7 @@ void INTERRUPT_init(){
 	// Interrupt Settings for INT_SCI0_RX
 	// ISR need to be defined for the registered interrupts
 	Interrupt_register(INT_SCI0_RX, &INT_SCI0_RX_ISR);
-	Interrupt_disable(INT_SCI0_RX);
+	Interrupt_enable(INT_SCI0_RX);
 }
 //*****************************************************************************
 //
