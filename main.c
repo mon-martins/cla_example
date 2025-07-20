@@ -40,15 +40,22 @@ volatile bool g_new_step_ready = false;      // Flag para novo passo de simulaçã
 
 // ========== Validation (without external pwm) ==================
 
-#define F_PWM                  10000.0f     // Frequência de chaveamento (Hz)
-#define T_PWM                  (1.0f / F_PWM) // Período de chaveamento (s)
-#define DT_SIM                 0.000005f    // Passo de simulação (5 µs)
-#define N_STEPS_PER_CYCLE      (uint32_t)(T_PWM / PARAM_SIMULATION_PERIOD_S) // Passos por ciclo PWM
-
-volatile uint32_t g_step_counter = 0;        // Contador de passos dentro do ciclo PWM
-volatile float g_duty_cycle = 0.25f;          // Razão cíclica (entre 0 e 1)
+//#define F_PWM                  10000.0f     // Frequência de chaveamento (Hz)
+//#define T_PWM                  (1.0f / F_PWM) // Período de chaveamento (s)
+//#define DT_SIM                 0.000005f    // Passo de simulação (5 µs)
+//#define N_STEPS_PER_CYCLE      (uint32_t)(T_PWM / PARAM_SIMULATION_PERIOD_S) // Passos por ciclo PWM
+//
+//volatile uint32_t g_step_counter = 0;        // Contador de passos dentro do ciclo PWM
+//volatile float g_duty_cycle = 0.25f;          // Razão cíclica (entre 0 e 1)
 
 // ==============================================================
+
+// =========== Validation with internal pwm =====================
+
+volatile float g_duty_cycle_set = 0.0f;          // Razão cíclica (entre 0 e 1)
+
+// ==============================================================
+
 
 void main(void)
 {
@@ -62,6 +69,7 @@ void main(void)
     EINT;
     ERTM;
 
+    SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
 
     float32_t v_l, i_c;
 
@@ -91,30 +99,31 @@ void main(void)
             g_il_sim   += (v_l * PARAM_INV_L) * PARAM_SIMULATION_PERIOD_S;
             g_vout_sim += (i_c * PARAM_INV_C) * PARAM_SIMULATION_PERIOD_S; // Vout := VC
 
+            uint16_t compa = g_duty_cycle_set*10000.0f;
+            EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, compa);
         }
     }
 
 }
 
+__interrupt void INT_GPIO_PWM_INPUT_XINT_ISR(void){
+
+    g_switch_on = GPIO_readPin(GPIO_PWM_INPUT);
+
+    Interrupt_clearACKGroup(INT_GPIO_PWM_INPUT_XINT_INTERRUPT_ACK_GROUP);
+
+}
+
+// Passo de simulação
+
 __interrupt void INT_myCPUTIMER0_ISR(void)
 {
-    // Define estado da chave com base na razão cíclica
-    g_switch_on = (g_step_counter < (uint32_t)(g_duty_cycle * N_STEPS_PER_CYCLE));
-
-    // Atualiza contador
-    g_step_counter++;
-
-    // Reinicia no fim do ciclo PWM
-    if (g_step_counter >= N_STEPS_PER_CYCLE)
-        g_step_counter = 0;
-
     // Sinaliza para o loop principal que deve simular o próximo passo
     g_new_step_ready = true;
 
     // Libera nova interrupção
     Interrupt_clearACKGroup(INT_myCPUTIMER0_INTERRUPT_ACK_GROUP);
 }
-
 
 
 __interrupt void cla1Isr1 ()

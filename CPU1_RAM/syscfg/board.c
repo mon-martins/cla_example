@@ -48,10 +48,15 @@ void Board_init()
 	EALLOW;
 
 	PinMux_init();
+	INPUTXBAR_init();
+	SYNC_init();
 	CLA_init();
 	MEMCFG_init();
 	CPUTIMER_init();
+	EPWM_init();
+	GPIO_init();
 	SCI_init();
+	XINT_init();
 	INTERRUPT_init();
 
 	EDIS;
@@ -68,6 +73,15 @@ void PinMux_init()
 	// PinMux for modules assigned to CPU1
 	//
 	
+	//
+	// EPWM1 -> myEPWM0 Pinmux
+	//
+	GPIO_setPinConfig(myEPWM0_EPWMA_PIN_CONFIG);
+	GPIO_setPadConfig(myEPWM0_EPWMA_GPIO, GPIO_PIN_TYPE_STD);
+	GPIO_setQualificationMode(myEPWM0_EPWMA_GPIO, GPIO_QUAL_SYNC);
+
+	// GPIO32 -> GPIO_PWM_INPUT Pinmux
+	GPIO_setPinConfig(GPIO_32_GPIO32);
 	//
 	// SCIA -> SCI0 Pinmux
 	//
@@ -158,6 +172,74 @@ void myCPUTIMER0_init(){
 
 //*****************************************************************************
 //
+// EPWM Configurations
+//
+//*****************************************************************************
+void EPWM_init(){
+    EPWM_setClockPrescaler(myEPWM0_BASE, EPWM_CLOCK_DIVIDER_1, EPWM_HSCLOCK_DIVIDER_1);	
+    EPWM_setTimeBasePeriod(myEPWM0_BASE, 10000);	
+    EPWM_setTimeBaseCounter(myEPWM0_BASE, 0);	
+    EPWM_setTimeBaseCounterMode(myEPWM0_BASE, EPWM_COUNTER_MODE_UP_DOWN);	
+    EPWM_disablePhaseShiftLoad(myEPWM0_BASE);	
+    EPWM_setPhaseShift(myEPWM0_BASE, 0);	
+    EPWM_setSyncOutPulseMode(myEPWM0_BASE, EPWM_SYNC_OUT_PULSE_DISABLED);	
+    EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, 5000);	
+    EPWM_setCounterCompareShadowLoadMode(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, EPWM_COMP_LOAD_ON_CNTR_ZERO);	
+    EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_B, 0);	
+    EPWM_setCounterCompareShadowLoadMode(myEPWM0_BASE, EPWM_COUNTER_COMPARE_B, EPWM_COMP_LOAD_ON_CNTR_ZERO);	
+    EPWM_disableActionQualifierShadowLoadMode(myEPWM0_BASE, EPWM_ACTION_QUALIFIER_A);	
+    EPWM_setActionQualifierShadowLoadMode(myEPWM0_BASE, EPWM_ACTION_QUALIFIER_A, EPWM_AQ_LOAD_ON_CNTR_ZERO);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_ZERO);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_PERIOD);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_LOW, EPWM_AQ_OUTPUT_ON_TIMEBASE_UP_CMPA);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_HIGH, EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPA);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_UP_CMPB);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_A, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPB);	
+    EPWM_disableActionQualifierShadowLoadMode(myEPWM0_BASE, EPWM_ACTION_QUALIFIER_B);	
+    EPWM_setActionQualifierShadowLoadMode(myEPWM0_BASE, EPWM_ACTION_QUALIFIER_B, EPWM_AQ_LOAD_ON_CNTR_ZERO);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_ZERO);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_PERIOD);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_UP_CMPA);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPA);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_UP_CMPB);	
+    EPWM_setActionQualifierAction(myEPWM0_BASE, EPWM_AQ_OUTPUT_B, EPWM_AQ_OUTPUT_NO_CHANGE, EPWM_AQ_OUTPUT_ON_TIMEBASE_DOWN_CMPB);	
+    EPWM_setRisingEdgeDelayCountShadowLoadMode(myEPWM0_BASE, EPWM_RED_LOAD_ON_CNTR_ZERO);	
+    EPWM_disableRisingEdgeDelayCountShadowLoadMode(myEPWM0_BASE);	
+    EPWM_setFallingEdgeDelayCountShadowLoadMode(myEPWM0_BASE, EPWM_FED_LOAD_ON_CNTR_ZERO);	
+    EPWM_disableFallingEdgeDelayCountShadowLoadMode(myEPWM0_BASE);	
+}
+
+//*****************************************************************************
+//
+// GPIO Configurations
+//
+//*****************************************************************************
+void GPIO_init(){
+	GPIO_PWM_INPUT_init();
+}
+
+void GPIO_PWM_INPUT_init(){
+	GPIO_setPadConfig(GPIO_PWM_INPUT, GPIO_PIN_TYPE_STD);
+	GPIO_setQualificationMode(GPIO_PWM_INPUT, GPIO_QUAL_SYNC);
+	GPIO_setDirectionMode(GPIO_PWM_INPUT, GPIO_DIR_MODE_IN);
+	GPIO_setControllerCore(GPIO_PWM_INPUT, GPIO_CORE_CPU1);
+}
+
+//*****************************************************************************
+//
+// INPUTXBAR Configurations
+//
+//*****************************************************************************
+void INPUTXBAR_init(){
+	myINPUTXBARINPUT0_init();
+}
+
+void myINPUTXBARINPUT0_init(){
+	XBAR_setInputPin(myINPUTXBARINPUT0_INPUT, myINPUTXBARINPUT0_SOURCE);
+}
+
+//*****************************************************************************
+//
 // INTERRUPT Configurations
 //
 //*****************************************************************************
@@ -172,6 +254,11 @@ void INTERRUPT_init(){
 	// ISR need to be defined for the registered interrupts
 	Interrupt_register(INT_myCPUTIMER0, &INT_myCPUTIMER0_ISR);
 	Interrupt_enable(INT_myCPUTIMER0);
+	
+	// Interrupt Settings for INT_GPIO_PWM_INPUT_XINT
+	// ISR need to be defined for the registered interrupts
+	Interrupt_register(INT_GPIO_PWM_INPUT_XINT, &INT_GPIO_PWM_INPUT_XINT_ISR);
+	Interrupt_enable(INT_GPIO_PWM_INPUT_XINT);
 	
 	// Interrupt Settings for INT_SCI0_RX
 	// ISR need to be defined for the registered interrupts
@@ -288,5 +375,44 @@ void SCI0_init(){
 	SCI_setFIFOInterruptLevel(SCI0_BASE, SCI_FIFO_TX0, SCI_FIFO_RX4);
 	SCI_enableFIFO(SCI0_BASE);
 	SCI_enableModule(SCI0_BASE);
+}
+
+//*****************************************************************************
+//
+// SYNC Scheme Configurations
+//
+//*****************************************************************************
+void SYNC_init(){
+	SysCtl_setSyncOutputConfig(SYSCTL_SYNC_OUT_SRC_EPWM1SYNCOUT);
+	//
+	// For EPWM1, the sync input is: SYSCTL_SYNC_IN_SRC_EXTSYNCIN1
+	//
+	SysCtl_setSyncInputConfig(SYSCTL_SYNC_IN_EPWM4, SYSCTL_SYNC_IN_SRC_EPWM1SYNCOUT);
+	SysCtl_setSyncInputConfig(SYSCTL_SYNC_IN_EPWM7, SYSCTL_SYNC_IN_SRC_EPWM1SYNCOUT);
+	SysCtl_setSyncInputConfig(SYSCTL_SYNC_IN_EPWM10, SYSCTL_SYNC_IN_SRC_EPWM1SYNCOUT);
+	SysCtl_setSyncInputConfig(SYSCTL_SYNC_IN_ECAP1, SYSCTL_SYNC_IN_SRC_EPWM1SYNCOUT);
+	SysCtl_setSyncInputConfig(SYSCTL_SYNC_IN_ECAP4, SYSCTL_SYNC_IN_SRC_EPWM1SYNCOUT);
+	//
+	// SOCA
+	//
+	SysCtl_enableExtADCSOCSource(0);
+	//
+	// SOCB
+	//
+	SysCtl_enableExtADCSOCSource(0);
+}
+//*****************************************************************************
+//
+// XINT Configurations
+//
+//*****************************************************************************
+void XINT_init(){
+	GPIO_PWM_INPUT_XINT_init();
+}
+
+void GPIO_PWM_INPUT_XINT_init(){
+	GPIO_setInterruptType(GPIO_PWM_INPUT_XINT, GPIO_INT_TYPE_BOTH_EDGES);
+	GPIO_setInterruptPin(GPIO_PWM_INPUT, GPIO_PWM_INPUT_XINT);
+	GPIO_enableInterrupt(GPIO_PWM_INPUT_XINT);
 }
 

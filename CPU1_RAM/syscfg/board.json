@@ -9,6 +9,10 @@
             "interruptHandler": "INT_myCPUTIMER0_ISR"
         },
         {
+            "interruptName": "INT_GPIO_PWM_INPUT_XINT",
+            "interruptHandler": "INT_GPIO_PWM_INPUT_XINT_ISR"
+        },
+        {
             "interruptName": "INT_SCI0_RX",
             "interruptHandler": "INT_SCI0_RX_ISR"
         }

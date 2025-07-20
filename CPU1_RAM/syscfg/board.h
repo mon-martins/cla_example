@@ -59,6 +59,20 @@ extern "C"
 //*****************************************************************************
 
 //
+// EPWM1 -> myEPWM0 Pinmux
+//
+//
+// EPWM1A - GPIO Settings
+//
+#define GPIO_PIN_EPWM1A 0
+#define myEPWM0_EPWMA_GPIO 0
+#define myEPWM0_EPWMA_PIN_CONFIG GPIO_0_EPWM1A
+//
+// GPIO32 - GPIO Settings
+//
+#define GPIO_PWM_INPUT_GPIO_PIN_CONFIG GPIO_32_GPIO32
+
+//
 // SCIA -> SCI0 Pinmux
 //
 //
@@ -100,6 +114,42 @@ void myCPUTIMER0_init();
 
 //*****************************************************************************
 //
+// EPWM Configurations
+//
+//*****************************************************************************
+#define myEPWM0_BASE EPWM1_BASE
+#define myEPWM0_TBPRD 10000
+#define myEPWM0_COUNTER_MODE EPWM_COUNTER_MODE_UP_DOWN
+#define myEPWM0_TBPHS 0
+#define myEPWM0_CMPA 5000
+#define myEPWM0_CMPB 0
+#define myEPWM0_CMPC 0
+#define myEPWM0_CMPD 0
+#define myEPWM0_DBRED 0
+#define myEPWM0_DBFED 0
+#define myEPWM0_TZA_ACTION EPWM_TZ_ACTION_HIGH_Z
+#define myEPWM0_TZB_ACTION EPWM_TZ_ACTION_HIGH_Z
+#define myEPWM0_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
+
+//*****************************************************************************
+//
+// GPIO Configurations
+//
+//*****************************************************************************
+#define GPIO_PWM_INPUT 32
+void GPIO_PWM_INPUT_init();
+
+//*****************************************************************************
+//
+// INPUTXBAR Configurations
+//
+//*****************************************************************************
+#define myINPUTXBARINPUT0_SOURCE 32
+#define myINPUTXBARINPUT0_INPUT XBAR_INPUT4
+void myINPUTXBARINPUT0_init();
+
+//*****************************************************************************
+//
 // INTERRUPT Configurations
 //
 //*****************************************************************************
@@ -115,6 +165,12 @@ extern __interrupt void cla1Isr1(void);
 #define INT_myCPUTIMER0 INT_TIMER0
 #define INT_myCPUTIMER0_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
 extern __interrupt void INT_myCPUTIMER0_ISR(void);
+
+// Interrupt Settings for INT_GPIO_PWM_INPUT_XINT
+// ISR need to be defined for the registered interrupts
+#define INT_GPIO_PWM_INPUT_XINT INT_XINT1
+#define INT_GPIO_PWM_INPUT_XINT_INTERRUPT_ACK_GROUP INTERRUPT_ACK_GROUP1
+extern __interrupt void INT_GPIO_PWM_INPUT_XINT_ISR(void);
 
 // Interrupt Settings for INT_SCI0_RX
 // ISR need to be defined for the registered interrupts
@@ -144,15 +200,35 @@ void SCI0_init();
 
 //*****************************************************************************
 //
+// SYNC Scheme Configurations
+//
+//*****************************************************************************
+
+//*****************************************************************************
+//
+// XINT Configurations
+//
+//*****************************************************************************
+#define GPIO_PWM_INPUT_XINT GPIO_INT_XINT1
+#define GPIO_PWM_INPUT_XINT_TYPE GPIO_INT_TYPE_BOTH_EDGES
+void GPIO_PWM_INPUT_XINT_init();
+
+//*****************************************************************************
+//
 // Board Configurations
 //
 //*****************************************************************************
 void	Board_init();
 void	CLA_init();
 void	CPUTIMER_init();
+void	EPWM_init();
+void	GPIO_init();
+void	INPUTXBAR_init();
 void	INTERRUPT_init();
 void	MEMCFG_init();
 void	SCI_init();
+void	SYNC_init();
+void	XINT_init();
 void	PinMux_init();
 
 //*****************************************************************************

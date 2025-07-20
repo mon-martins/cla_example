@@ -9,15 +9,21 @@
 /**
  * Import the modules used in this configuration.
  */
-const cla       = scripting.addModule("/driverlib/cla.js", {}, false);
-const cla1      = cla.addInstance();
-const cputimer  = scripting.addModule("/driverlib/cputimer.js", {}, false);
-const cputimer1 = cputimer.addInstance();
-const memcfg    = scripting.addModule("/driverlib/memcfg.js");
-const sci       = scripting.addModule("/driverlib/sci.js", {}, false);
-const sci1      = sci.addInstance();
-const CMD       = scripting.addModule("/utilities/cmd_tool/cmd_syscfg/source/CMD", {}, false);
-const CMD1      = CMD.addInstance();
+const cla              = scripting.addModule("/driverlib/cla.js", {}, false);
+const cla1             = cla.addInstance();
+const cputimer         = scripting.addModule("/driverlib/cputimer.js", {}, false);
+const cputimer1        = cputimer.addInstance();
+const epwm             = scripting.addModule("/driverlib/epwm.js", {}, false);
+const epwm1            = epwm.addInstance();
+const gpio             = scripting.addModule("/driverlib/gpio.js", {}, false);
+const gpio1            = gpio.addInstance();
+const inputxbar_input  = scripting.addModule("/driverlib/inputxbar_input.js", {}, false);
+const inputxbar_input1 = inputxbar_input.addInstance();
+const memcfg           = scripting.addModule("/driverlib/memcfg.js");
+const sci              = scripting.addModule("/driverlib/sci.js", {}, false);
+const sci1             = sci.addInstance();
+const CMD              = scripting.addModule("/utilities/cmd_tool/cmd_syscfg/source/CMD", {}, false);
+const CMD1             = CMD.addInstance();
 
 /**
  * Write custom configuration values to the imported modules.
@@ -46,6 +52,32 @@ cputimer1.startTimer               = true;
 cputimer1.emulationMode            = "CPUTIMER_EMULATIONMODE_RUNFREE";
 cputimer1.timerInt.enableInterrupt = true;
 
+epwm1.$name                                                      = "myEPWM0";
+epwm1.epwmTimebase_hsClockDiv                                    = "EPWM_HSCLOCK_DIVIDER_1";
+epwm1.epwmTimebase_counterMode                                   = "EPWM_COUNTER_MODE_UP_DOWN";
+epwm1.epwmTimebase_period                                        = 10000;
+epwm1.epwmTimebase_syncOutPulseMode                              = "EPWM_SYNC_OUT_PULSE_DISABLED";
+epwm1.epwmCounterCompare_cmpA                                    = 5000;
+epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_UP_CMPA   = "EPWM_AQ_OUTPUT_LOW";
+epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_DOWN_CMPA = "EPWM_AQ_OUTPUT_HIGH";
+epwm1.useCase                                                    = "CUSTOM";
+epwm1.useInterfacePins                                           = ["EPWM#A"];
+epwm1.epwm.$assign                                               = "EPWM1";
+epwm1.epwm.epwm_aPin.$assign                                     = "boosterpack1.40";
+scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to EPWM1 BP on the LaunchPad F28379D\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", epwm1.epwm, "epwm_aPin");
+
+gpio1.$name                     = "GPIO_PWM_INPUT";
+gpio1.useInterrupt              = true;
+gpio1.gpioPin.$assign           = "boosterpack1.2";
+gpio1.xint.enableInt            = true;
+gpio1.xint.registerInterrupts   = true;
+gpio1.xint.intType              = "GPIO_INT_TYPE_BOTH_EDGES";
+gpio1.xint.xInt.enableInterrupt = true;
+
+inputxbar_input1.$name         = "myINPUTXBARINPUT0";
+gpio1.xint.inputxbar           = inputxbar_input1;
+inputxbar_input1.inputxbarGpio = "GPIO32";
+
 memcfg.init_MEMCFG_SECT_MSGCPUTOCLA1 = true;
 memcfg.init_MEMCFG_SECT_MSGCLA1TOCPU = true;
 memcfg.config_MEMCFG_SECT_LS1        = "CLA_data";
@@ -62,6 +94,8 @@ sci1.sci.scitxdPin.$assign      = "GPIO42";
 sci1.rxQual.$name               = "myGPIOQUAL0";
 sci1.txQual.$name               = "myGPIOQUAL1";
 sci1.sciRXInt.enableInterrupt   = true;
+scripting.suppress("Not pinned out,@@@.+?@@@ is not pinned out on the LaunchPad F28379D\\.  @@@.+?@@@", sci1.sci, "scirxdPin");
+scripting.suppress("Not pinned out,@@@.+?@@@ is not pinned out on the LaunchPad F28379D\\.  @@@.+?@@@", sci1.sci, "scitxdPin");
 
 CMD1.$name                         = "CMD0";
 CMD1.sectionMemory_cla1ToCpuMsgRAM = ["CLATOCPU_MSGRAM"];

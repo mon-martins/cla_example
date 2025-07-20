@@ -18,6 +18,7 @@ syscfg/board.cmd.genlibs: build-1806428945
 syscfg/board.opt: build-1806428945
 syscfg/board.json: build-1806428945
 syscfg/pinmux.csv: build-1806428945
+syscfg/epwm.dot: build-1806428945
 syscfg/device_cmd.cmd: build-1806428945
 syscfg/device_cmd.c: build-1806428945
 syscfg/device_cmd.h: build-1806428945
