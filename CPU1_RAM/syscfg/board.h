@@ -141,7 +141,7 @@ void DAC0_init();
 //
 //*****************************************************************************
 #define myEPWM0_BASE EPWM1_BASE
-#define myEPWM0_TBPRD 5000
+#define myEPWM0_TBPRD 2500
 #define myEPWM0_COUNTER_MODE EPWM_COUNTER_MODE_UP_DOWN
 #define myEPWM0_TBPHS 0
 #define myEPWM0_CMPA 2500

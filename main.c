@@ -7,11 +7,13 @@
 #include "board.h"
 #include "scicomm.h"
 
+#include "shared_vars.h"
+
 
 // CLA
 
 #pragma DATA_SECTION(cla_reference,"CpuToCla1MsgRAM");
-float cla_reference = 0;
+float cla_reference = 25.0f;
 //#pragma DATA_SECTION(fResult,"Cla1ToCpuMsgRAM");
 //float fResult;
 
@@ -62,6 +64,7 @@ volatile bool g_new_step_ready = false;      // Flag para novo passo de simulaçã
 //float32_t g_adc_value = 0;
 
 
+
 void main(void)
 {
     Device_init();
@@ -73,6 +76,8 @@ void main(void)
     Board_init();
     EINT;
     ERTM;
+
+    cla_reference = 32;
 
     SysCtl_enablePeripheral(SYSCTL_PERIPH_CLK_TBCLKSYNC);
 
@@ -104,13 +109,15 @@ void main(void)
             g_il_sim   += (v_l * PARAM_INV_L) * PARAM_SIMULATION_PERIOD_S;
             g_vout_sim += (i_c * PARAM_INV_C) * PARAM_SIMULATION_PERIOD_S; // Vout := VC
 
-            DAC_setShadowValue(DAC0_BASE, g_vout_sim * (4095.0f / 110.0f) );
+            uint16_t dac_value = g_vout_sim * DAC_FACTOR;
+
+            if(dac_value > MAX_DIGITAL_VALUE-1){
+                DAC_setShadowValue(DAC0_BASE, 4095 );
+            }else{
+                DAC_setShadowValue(DAC0_BASE, dac_value );
+            }
         }
-
-        g_adc_value = ADC_readResult(ADC0_RESULT_BASE, ADC_SOC_NUMBER0) * (110.0f/4095.0f);
-
     }
-
 }
 
 __interrupt void INT_GPIO_PWM_INPUT_XINT_ISR(void){
