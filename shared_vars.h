@@ -8,7 +8,6 @@
 #ifndef SHARED_VARS_H_
 #define SHARED_VARS_H_
 
-extern float fVal;
-extern float fResult;
+extern float cla_reference;
 
 #endif /* SHARED_VARS_H_ */

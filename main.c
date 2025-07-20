@@ -10,10 +10,10 @@
 
 // CLA
 
-#pragma DATA_SECTION(fVal,"CpuToCla1MsgRAM");
-float fVal;
-#pragma DATA_SECTION(fResult,"Cla1ToCpuMsgRAM");
-float fResult;
+#pragma DATA_SECTION(cla_reference,"CpuToCla1MsgRAM");
+float cla_reference = 0;
+//#pragma DATA_SECTION(fResult,"Cla1ToCpuMsgRAM");
+//float fResult;
 
 // Simulation
 
@@ -52,9 +52,14 @@ volatile bool g_new_step_ready = false;      // Flag para novo passo de simulaçã
 
 // =========== Validation with internal pwm =====================
 
-volatile float g_duty_cycle_set = 0.0f;          // Razão cíclica (entre 0 e 1)
+//volatile float g_duty_cycle_set = 0.0f;          // Razão cíclica (entre 0 e 1)
 
 // ==============================================================
+
+// ================ DAC and ADC Validation ======================
+
+//float32_t g_dac_value = 0;
+//float32_t g_adc_value = 0;
 
 
 void main(void)
@@ -99,9 +104,11 @@ void main(void)
             g_il_sim   += (v_l * PARAM_INV_L) * PARAM_SIMULATION_PERIOD_S;
             g_vout_sim += (i_c * PARAM_INV_C) * PARAM_SIMULATION_PERIOD_S; // Vout := VC
 
-            uint16_t compa = g_duty_cycle_set*10000.0f;
-            EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, compa);
+            DAC_setShadowValue(DAC0_BASE, g_vout_sim * (4095.0f / 110.0f) );
         }
+
+        g_adc_value = ADC_readResult(ADC0_RESULT_BASE, ADC_SOC_NUMBER0) * (110.0f/4095.0f);
+
     }
 
 }
@@ -128,7 +135,6 @@ __interrupt void INT_myCPUTIMER0_ISR(void)
 
 __interrupt void cla1Isr1 ()
 {
-    protocolSendData(SCI0_BASE, &fResult , sizeof(float) );
 
     Interrupt_clearACKGroup(INT_myCLA01_INTERRUPT_ACK_GROUP);
 }

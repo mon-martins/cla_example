@@ -90,6 +90,21 @@ extern "C"
 
 //*****************************************************************************
 //
+// ADC Configurations
+//
+//*****************************************************************************
+#define ADC0_BASE ADCA_BASE
+#define ADC0_RESULT_BASE ADCARESULT_BASE
+#define ADC0_SOC0 ADC_SOC_NUMBER0
+#define ADC0_FORCE_SOC0 ADC_FORCE_SOC0
+#define ADC0_SAMPLE_WINDOW_SOC0 75
+#define ADC0_TRIGGER_SOURCE_SOC0 ADC_TRIGGER_EPWM1_SOCA
+#define ADC0_CHANNEL_SOC0 ADC_CH_ADCIN0
+void ADC0_init();
+
+
+//*****************************************************************************
+//
 // CLA Configurations
 //
 //*****************************************************************************
@@ -114,14 +129,22 @@ void myCPUTIMER0_init();
 
 //*****************************************************************************
 //
+// DAC Configurations
+//
+//*****************************************************************************
+#define DAC0_BASE DACB_BASE
+void DAC0_init();
+
+//*****************************************************************************
+//
 // EPWM Configurations
 //
 //*****************************************************************************
 #define myEPWM0_BASE EPWM1_BASE
-#define myEPWM0_TBPRD 10000
+#define myEPWM0_TBPRD 5000
 #define myEPWM0_COUNTER_MODE EPWM_COUNTER_MODE_UP_DOWN
 #define myEPWM0_TBPHS 0
-#define myEPWM0_CMPA 5000
+#define myEPWM0_CMPA 2500
 #define myEPWM0_CMPB 0
 #define myEPWM0_CMPC 0
 #define myEPWM0_CMPD 0
@@ -219,8 +242,10 @@ void GPIO_PWM_INPUT_XINT_init();
 //
 //*****************************************************************************
 void	Board_init();
+void	ADC_init();
 void	CLA_init();
 void	CPUTIMER_init();
+void	DAC_init();
 void	EPWM_init();
 void	GPIO_init();
 void	INPUTXBAR_init();

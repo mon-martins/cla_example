@@ -65,6 +65,7 @@ GEN_MISC_FILES += \
 ./syscfg/board.json \
 ./syscfg/pinmux.csv \
 ./syscfg/epwm.dot \
+./syscfg/adc.dot \
 ./syscfg/device_cmd.h \
 ./syscfg/device_cmd.cmd.genlibs \
 ./syscfg/c2000ware_libraries.cmd.genlibs \
@@ -87,6 +88,7 @@ GEN_MISC_FILES__QUOTED += \
 "syscfg\board.json" \
 "syscfg\pinmux.csv" \
 "syscfg\epwm.dot" \
+"syscfg\adc.dot" \
 "syscfg\device_cmd.h" \
 "syscfg\device_cmd.cmd.genlibs" \
 "syscfg\c2000ware_libraries.cmd.genlibs" \

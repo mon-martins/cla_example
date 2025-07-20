@@ -9,10 +9,14 @@
 /**
  * Import the modules used in this configuration.
  */
+const adc              = scripting.addModule("/driverlib/adc.js", {}, false);
+const adc1             = adc.addInstance();
 const cla              = scripting.addModule("/driverlib/cla.js", {}, false);
 const cla1             = cla.addInstance();
 const cputimer         = scripting.addModule("/driverlib/cputimer.js", {}, false);
 const cputimer1        = cputimer.addInstance();
+const dac              = scripting.addModule("/driverlib/dac.js", {}, false);
+const dac1             = dac.addInstance();
 const epwm             = scripting.addModule("/driverlib/epwm.js", {}, false);
 const epwm1            = epwm.addInstance();
 const gpio             = scripting.addModule("/driverlib/gpio.js", {}, false);
@@ -28,6 +32,15 @@ const CMD1             = CMD.addInstance();
 /**
  * Write custom configuration values to the imported modules.
  */
+adc1.$name                          = "ADC0";
+adc1.adcClockPrescaler              = "ADC_CLK_DIV_4_0";
+adc1.enabledSOCs                    = ["ADC_SOC_NUMBER0"];
+adc1.soc0Trigger                    = "ADC_TRIGGER_EPWM1_SOCA";
+adc1.soc0SampleWindow               = 15;
+adc1.enabledInts                    = ["ADC_INT_NUMBER1"];
+adc1.enableInterrupt1ContinuousMode = true;
+adc1.enableInterrupt1               = true;
+
 cla1.$name             = "myCLA0";
 cla1.enable_CLA_TASK_2 = false;
 cla1.enable_CLA_TASK_4 = false;
@@ -52,16 +65,24 @@ cputimer1.startTimer               = true;
 cputimer1.emulationMode            = "CPUTIMER_EMULATIONMODE_RUNFREE";
 cputimer1.timerInt.enableInterrupt = true;
 
+dac1.$name            = "DAC0";
+dac1.dacBase          = "DACB_BASE";
+dac1.referenceVoltage = "DAC_REF_ADC_VREFHI";
+dac1.enableOutput     = true;
+
 epwm1.$name                                                      = "myEPWM0";
 epwm1.epwmTimebase_hsClockDiv                                    = "EPWM_HSCLOCK_DIVIDER_1";
 epwm1.epwmTimebase_counterMode                                   = "EPWM_COUNTER_MODE_UP_DOWN";
-epwm1.epwmTimebase_period                                        = 10000;
 epwm1.epwmTimebase_syncOutPulseMode                              = "EPWM_SYNC_OUT_PULSE_DISABLED";
-epwm1.epwmCounterCompare_cmpA                                    = 5000;
 epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_UP_CMPA   = "EPWM_AQ_OUTPUT_LOW";
 epwm1.epwmActionQualifier_EPWM_AQ_OUTPUT_A_ON_TIMEBASE_DOWN_CMPA = "EPWM_AQ_OUTPUT_HIGH";
 epwm1.useCase                                                    = "CUSTOM";
 epwm1.useInterfacePins                                           = ["EPWM#A"];
+epwm1.epwmCounterCompare_cmpA                                    = 2500;
+epwm1.epwmTimebase_period                                        = 5000;
+epwm1.epwmEventTrigger_EPWM_SOC_A_triggerEnable                  = true;
+epwm1.epwmEventTrigger_EPWM_SOC_A_triggerSource                  = "EPWM_SOC_TBCTR_ZERO_OR_PERIOD";
+epwm1.epwmEventTrigger_EPWM_SOC_A_triggerEventPrescalar          = "1";
 epwm1.epwm.$assign                                               = "EPWM1";
 epwm1.epwm.epwm_aPin.$assign                                     = "boosterpack1.40";
 scripting.suppress("Connected to hardware,@@@.+?@@@ is connected to EPWM1 BP on the LaunchPad F28379D\\. Consider selecting it in \'use hardware\' above\\. @@@.+?@@@", epwm1.epwm, "epwm_aPin");

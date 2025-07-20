@@ -15,16 +15,24 @@
 float x[3];
 float y[3];
 
+float32_t voltage_read;
+
 __interrupt void Cla1Task1()
 {
 
-//    x[2] = x[1]; x[1] = x[0]; x[0] = REF - fVal;
-    x[2] = x[1]; x[1] = x[0]; x[0] = fVal;
+    float32_t measure = 0;
+
+    x[2] = x[1]; x[1] = x[0]; x[0] = cla_reference - measure;
+
     y[2] = y[1]; y[1] = y[0];
     y[0] = B0*x[0] + B1*x[1] + B2*x[2] - A1*y[1] - A2*y[2];
 
     y[0] = (y[0] > UL) ? UL : y[0];
     y[0] = (y[0] < LL) ? LL : y[0];
 
-    fResult = y[0];
+    float32_t duty_cycle = y[0];
+
+    uint16_t compa = duty_cycle*10000.0f;
+    EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, compa);
+
 }
