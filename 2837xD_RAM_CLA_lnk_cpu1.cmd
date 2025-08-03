@@ -78,7 +78,7 @@ PAGE 1 :
 SECTIONS
 {
    codestart        : > BEGIN,      PAGE = 0
-   .text            : >> RAMGS3 | RAMGS4,    PAGE = 1
+   .text            : >> RAMGS3 | RAMGS4 | RAMGS5,    PAGE = 1
    .cinit           : > RAMM0,      PAGE = 0
    .switch          : > RAMM0,      PAGE = 0
    .reset           : > RESET,      PAGE = 0, TYPE = DSECT /* not used, */
@@ -114,6 +114,9 @@ SECTIONS
 
    Cla1ToCpuMsgRAM  : > CLA1_MSGRAMLOW,   PAGE = 1
    CpuToCla1MsgRAM  : > CLA1_MSGRAMHIGH,  PAGE = 1
+
+   .buffer_data     : > RAMGS12 | RAMGS13 | RAMGS14, PAGE = 1
+
 
    /* The following section definition are for SDFM examples */
    Filter1_RegsFile : > RAMGS1,	PAGE = 1, fill=0x1111

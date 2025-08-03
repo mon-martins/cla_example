@@ -100,6 +100,11 @@ extern "C"
 #define ADC0_SAMPLE_WINDOW_SOC0 75
 #define ADC0_TRIGGER_SOURCE_SOC0 ADC_TRIGGER_EPWM1_SOCA
 #define ADC0_CHANNEL_SOC0 ADC_CH_ADCIN0
+#define ADC0_SOC1 ADC_SOC_NUMBER1
+#define ADC0_FORCE_SOC1 ADC_FORCE_SOC1
+#define ADC0_SAMPLE_WINDOW_SOC1 75
+#define ADC0_TRIGGER_SOURCE_SOC1 ADC_TRIGGER_EPWM1_SOCA
+#define ADC0_CHANNEL_SOC1 ADC_CH_ADCIN2
 void ADC0_init();
 
 
@@ -121,6 +126,16 @@ void myCLA0_init();
 
 //*****************************************************************************
 //
+// CMPSS Configurations
+//
+//*****************************************************************************
+#define myCMPSS0_BASE CMPSS1_BASE
+#define current_input_BASE CMPSS1_BASE    
+#define teste_BASE CMPSS1_BASE    
+void myCMPSS0_init();
+
+//*****************************************************************************
+//
 // CPUTIMER Configurations
 //
 //*****************************************************************************
@@ -132,8 +147,10 @@ void myCPUTIMER0_init();
 // DAC Configurations
 //
 //*****************************************************************************
-#define DAC0_BASE DACB_BASE
+#define DAC0_BASE DACA_BASE
 void DAC0_init();
+#define DAC1_BASE DACB_BASE
+void DAC1_init();
 
 //*****************************************************************************
 //
@@ -150,9 +167,19 @@ void DAC0_init();
 #define myEPWM0_CMPD 0
 #define myEPWM0_DBRED 0
 #define myEPWM0_DBFED 0
-#define myEPWM0_TZA_ACTION EPWM_TZ_ACTION_HIGH_Z
-#define myEPWM0_TZB_ACTION EPWM_TZ_ACTION_HIGH_Z
+#define myEPWM0_TZA_ACTION EPWM_TZ_ACTION_LOW
+#define myEPWM0_TZB_ACTION EPWM_TZ_ACTION_LOW
+#define myEPWM0_CBC_SOURCES (EPWM_TZ_SIGNAL_CBC4 | EPWM_TZ_SIGNAL_DCBEVT2)
 #define myEPWM0_INTERRUPT_SOURCE EPWM_INT_TBCTR_DISABLED
+
+//*****************************************************************************
+//
+// EPWMXBAR Configurations
+//
+//*****************************************************************************
+void myEPWMXBAR0_init();
+#define myEPWMXBAR0 XBAR_TRIP4
+#define myEPWMXBAR0_ENABLED_MUXES (XBAR_MUX00)
 
 //*****************************************************************************
 //
@@ -244,9 +271,11 @@ void GPIO_PWM_INPUT_XINT_init();
 void	Board_init();
 void	ADC_init();
 void	CLA_init();
+void	CMPSS_init();
 void	CPUTIMER_init();
 void	DAC_init();
 void	EPWM_init();
+void	EPWMXBAR_init();
 void	GPIO_init();
 void	INPUTXBAR_init();
 void	INTERRUPT_init();

@@ -53,9 +53,11 @@ void Board_init()
 	CLA_init();
 	MEMCFG_init();
 	ADC_init();
+	CMPSS_init();
 	CPUTIMER_init();
 	DAC_init();
 	EPWM_init();
+	EPWMXBAR_init();
 	GPIO_init();
 	SCI_init();
 	XINT_init();
@@ -152,6 +154,19 @@ void ADC0_init(){
 	ADC_setupSOC(ADC0_BASE, ADC_SOC_NUMBER0, ADC_TRIGGER_EPWM1_SOCA, ADC_CH_ADCIN0, 15U);
 	ADC_setInterruptSOCTrigger(ADC0_BASE, ADC_SOC_NUMBER0, ADC_INT_SOC_TRIGGER_NONE);
 	//
+	// Start of Conversion 1 Configuration
+	//
+	//
+	// Configures a start-of-conversion (SOC) in the ADC and its interrupt SOC trigger.
+	// 	  	SOC number		: 1
+	//	  	Trigger			: ADC_TRIGGER_EPWM1_SOCA
+	//	  	Channel			: ADC_CH_ADCIN2
+	//	 	Sample Window	: 15 SYSCLK cycles
+	//		Interrupt Trigger: ADC_INT_SOC_TRIGGER_NONE
+	//
+	ADC_setupSOC(ADC0_BASE, ADC_SOC_NUMBER1, ADC_TRIGGER_EPWM1_SOCA, ADC_CH_ADCIN2, 15U);
+	ADC_setInterruptSOCTrigger(ADC0_BASE, ADC_SOC_NUMBER1, ADC_INT_SOC_TRIGGER_NONE);
+	//
 	// ADC Interrupt 1 Configuration
 	// 		Source	: ADC_SOC_NUMBER0
 	// 		Interrupt Source: enabled
@@ -221,6 +236,82 @@ void CLA_init()
 
 //*****************************************************************************
 //
+// CMPSS Configurations
+//
+//*****************************************************************************
+void CMPSS_init(){
+	myCMPSS0_init();
+}
+
+void myCMPSS0_init(){
+    //
+    // Sets the configuration for the high comparator.
+    //
+    CMPSS_configHighComparator(myCMPSS0_BASE,(CMPSS_INSRC_DAC));
+    //
+    // Sets the configuration for the low comparator.
+    //
+    CMPSS_configLowComparator(myCMPSS0_BASE,(CMPSS_INSRC_DAC));
+    //
+    // Sets the configuration for the internal comparator DACs.
+    //
+    CMPSS_configDAC(myCMPSS0_BASE,(CMPSS_DACVAL_SYSCLK | CMPSS_DACREF_VDDA | CMPSS_DACSRC_SHDW));
+    //
+    // Sets the value of the internal DAC of the high comparator.
+    //
+    CMPSS_setDACValueHigh(myCMPSS0_BASE,1240U);
+    //
+    // Sets the value of the internal DAC of the low comparator.
+    //
+    CMPSS_setDACValueLow(myCMPSS0_BASE,0U);
+    //
+    //  Configures the digital filter of the high comparator.
+    //
+    CMPSS_configFilterHigh(myCMPSS0_BASE, 0U, 1U, 1U);
+    //
+    // Configures the digital filter of the low comparator.
+    //
+    CMPSS_configFilterLow(myCMPSS0_BASE, 0U, 1U, 1U);
+    //
+    // Sets the output signal configuration for the high comparator.
+    //
+    CMPSS_configOutputsHigh(myCMPSS0_BASE,(CMPSS_TRIPOUT_ASYNC_COMP | CMPSS_TRIP_ASYNC_COMP));
+    //
+    // Sets the output signal configuration for the low comparator.
+    //
+    CMPSS_configOutputsLow(myCMPSS0_BASE,(CMPSS_TRIPOUT_ASYNC_COMP | CMPSS_TRIP_ASYNC_COMP));
+    //
+    // Sets the comparator hysteresis settings.
+    //
+    CMPSS_setHysteresis(myCMPSS0_BASE,0U);
+    //
+    // Configures the comparator subsystem's ramp generator.
+    //
+    CMPSS_configRamp(myCMPSS0_BASE,0U,0U,0U,1U,true);
+    //
+    // Disables reset of HIGH comparator digital filter output latch on PWMSYNC
+    //
+    CMPSS_disableLatchResetOnPWMSYNCHigh(myCMPSS0_BASE);
+    //
+    // Disables reset of LOW comparator digital filter output latch on PWMSYNC
+    //
+    CMPSS_disableLatchResetOnPWMSYNCLow(myCMPSS0_BASE);
+    //
+    // Configures whether or not the digital filter latches are reset by PWMSYNC
+    //
+    CMPSS_configLatchOnPWMSYNC(myCMPSS0_BASE,false,false);
+    //
+    // Enables the CMPSS module.
+    //
+    CMPSS_enableModule(myCMPSS0_BASE);
+    //
+    // Delay for CMPSS DAC to power up.
+    //
+    DEVICE_DELAY_US(500);
+}
+
+//*****************************************************************************
+//
 // CPUTIMER Configurations
 //
 //*****************************************************************************
@@ -246,6 +337,7 @@ void myCPUTIMER0_init(){
 //*****************************************************************************
 void DAC_init(){
 	DAC0_init();
+	DAC1_init();
 }
 
 void DAC0_init(){
@@ -265,6 +357,29 @@ void DAC0_init(){
 	// Set the DAC shadow output
 	//
 	DAC_setShadowValue(DAC0_BASE, 0U);
+
+	//
+	// Delay for buffered DAC to power up.
+	//
+	DEVICE_DELAY_US(500);
+}
+void DAC1_init(){
+	//
+	// Set DAC reference voltage.
+	//
+	DAC_setReferenceVoltage(DAC1_BASE, DAC_REF_ADC_VREFHI);
+	//
+	// Set DAC load mode.
+	//
+	DAC_setLoadMode(DAC1_BASE, DAC_LOAD_SYSCLK);
+	//
+	// Enable the DAC output
+	//
+	DAC_enableOutput(DAC1_BASE);
+	//
+	// Set the DAC shadow output
+	//
+	DAC_setShadowValue(DAC1_BASE, 0U);
 
 	//
 	// Delay for buffered DAC to power up.
@@ -309,9 +424,37 @@ void EPWM_init(){
     EPWM_disableRisingEdgeDelayCountShadowLoadMode(myEPWM0_BASE);	
     EPWM_setFallingEdgeDelayCountShadowLoadMode(myEPWM0_BASE, EPWM_FED_LOAD_ON_CNTR_ZERO);	
     EPWM_disableFallingEdgeDelayCountShadowLoadMode(myEPWM0_BASE);	
+    EPWM_setTripZoneAction(myEPWM0_BASE, EPWM_TZ_ACTION_EVENT_TZA, EPWM_TZ_ACTION_LOW);	
+    EPWM_setTripZoneAction(myEPWM0_BASE, EPWM_TZ_ACTION_EVENT_TZB, EPWM_TZ_ACTION_LOW);	
+    EPWM_setTripZoneAction(myEPWM0_BASE, EPWM_TZ_ACTION_EVENT_DCAEVT1, EPWM_TZ_ACTION_LOW);	
+    EPWM_setTripZoneAction(myEPWM0_BASE, EPWM_TZ_ACTION_EVENT_DCAEVT2, EPWM_TZ_ACTION_LOW);	
+    EPWM_setTripZoneAction(myEPWM0_BASE, EPWM_TZ_ACTION_EVENT_DCBEVT1, EPWM_TZ_ACTION_LOW);	
+    EPWM_setTripZoneAction(myEPWM0_BASE, EPWM_TZ_ACTION_EVENT_DCBEVT2, EPWM_TZ_ACTION_LOW);	
+    EPWM_enableTripZoneSignals(myEPWM0_BASE, EPWM_TZ_SIGNAL_CBC4 | EPWM_TZ_SIGNAL_DCBEVT2);	
+    EPWM_selectDigitalCompareTripInput(myEPWM0_BASE, EPWM_DC_TRIP_COMBINATION, EPWM_DC_TYPE_DCBH);	
+    EPWM_enableDigitalCompareTripCombinationInput(myEPWM0_BASE, EPWM_DC_COMBINATIONAL_TRIPIN4, EPWM_DC_TYPE_DCBH);	
+    EPWM_selectDigitalCompareTripInput(myEPWM0_BASE, EPWM_DC_TRIP_COMBINATION, EPWM_DC_TYPE_DCBL);	
+    EPWM_enableDigitalCompareTripCombinationInput(myEPWM0_BASE, EPWM_DC_COMBINATIONAL_TRIPIN4, EPWM_DC_TYPE_DCBL);	
+    EPWM_setTripZoneDigitalCompareEventCondition(myEPWM0_BASE, EPWM_TZ_DC_OUTPUT_B1, EPWM_TZ_EVENT_DCXH_HIGH);	
+    EPWM_setTripZoneDigitalCompareEventCondition(myEPWM0_BASE, EPWM_TZ_DC_OUTPUT_B2, EPWM_TZ_EVENT_DCXH_HIGH);	
     EPWM_enableADCTrigger(myEPWM0_BASE, EPWM_SOC_A);	
     EPWM_setADCTriggerSource(myEPWM0_BASE, EPWM_SOC_A, EPWM_SOC_TBCTR_PERIOD);	
     EPWM_setADCTriggerEventPrescale(myEPWM0_BASE, EPWM_SOC_A, 1);	
+}
+
+//*****************************************************************************
+//
+// EPWMXBAR Configurations
+//
+//*****************************************************************************
+void EPWMXBAR_init(){
+	myEPWMXBAR0_init();
+}
+
+void myEPWMXBAR0_init(){
+		
+	XBAR_setEPWMMuxConfig(myEPWMXBAR0, XBAR_EPWM_MUX00_CMPSS1_CTRIPH);
+	XBAR_enableEPWMMux(myEPWMXBAR0, XBAR_MUX00);
 }
 
 //*****************************************************************************

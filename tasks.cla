@@ -2,11 +2,12 @@
 #include "board.h"
 #include "shared_vars.h"
 
-#define B0 0.000386f
-#define B1 0.000117f
-#define B2 -0.000269f
+#define B0 0.000183f
+#define B1 0.000349f
+#define B2 0.000166f
 #define A1 -1.521886f
 #define A2 0.521886f
+
 
 #define UL 1
 #define LL 0
@@ -26,7 +27,7 @@ __interrupt void Cla1Task1()
 
     float32_t voltage_output_adc;
 
-    voltage_output_adc =  adc_value * ADC_FACTOR;
+    voltage_output_adc =  adc_value * ADC_FACTOR_VOLTAGE;
     g_voltage_output_adc = voltage_output_adc;
 
     x[2] = x[1]; x[1] = x[0]; x[0] = cla_reference - voltage_output_adc;
@@ -38,9 +39,12 @@ __interrupt void Cla1Task1()
     y[0] = (y[0] < LL) ? LL : y[0];
 
     float32_t duty_cycle = y[0];
+//    float32_t duty_cycle = .25f;
     g_duty_cycle = duty_cycle;
 
     uint16_t compa = duty_cycle*EPWM_PRD_VALUE;
     EPWM_setCounterCompareValue(myEPWM0_BASE, EPWM_COUNTER_COMPARE_A, compa);
 
+    from_cla_duty = duty_cycle;
+    from_cla_vout = voltage_output_adc;
 }
